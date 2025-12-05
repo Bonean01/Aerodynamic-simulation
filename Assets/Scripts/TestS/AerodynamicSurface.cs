@@ -23,7 +23,7 @@ public class AerodynamicSurface {
     /// Returns the mount angle in radians.
     /// </summary>
     /// <returns></returns>
-    public float getMountAngle() { return mountAngle * (360f / (2*(float)Math.PI)); }
+    public float GetMountAngle() { return mountAngle * (360f / (2*(float)Math.PI)); }
 
     /// <summary>
     /// Computes the lift coeficient based on the current angle of attack and the set criticalAngle.

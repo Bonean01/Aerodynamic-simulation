@@ -15,21 +15,23 @@ public class Airplane : Aircraft {
     }
 
     protected override Vector3 ComputeLift(float airDensity) {
+        if (velocity.Length() == 0) return Vector3.Zero;
         // Compute the lift produced by the wings.
         float liftMagnitude = wings.ComputeLift(AngleOfAttack, velocity.Length(), airDensity);
         TestContext.WriteLine("Wing lift magnitude: " + liftMagnitude);
 
         // Compute the direction in global coordinates in which the lift will be applied considering the orientation
         // of the aircraft and the mounting angle of the aerodynamic surfaces.
-        float effectivePitch = this.pitch + wings.getMountAngle();
-        Matrix4x4 rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(this.yaw, effectivePitch, this.roll);
-        Vector3 liftDirection = Vector3.Transform(Vector3.UnitY, rotationMatrix);
+        float effectivePitch = this.pitch + wings.GetMountAngle();
+        Matrix4x4 local2world = GetLocalToGlobalMatrix(this.yaw, effectivePitch, this.roll);
+        Vector3 liftDirection = Vector3.Transform(Vector3.UnitY, local2world);
         TestContext.WriteLine("liftDirection: " + liftDirection);
 
         return liftMagnitude * liftDirection;
     }
 
     protected override Vector3 ComputeDrag(float airDensity) {
+        if (velocity.Length() == 0) return Vector3.Zero;
         // Compute the drag produced by the wings.
         float dragMagnitude = wings.ComputeDrag(AngleOfAttack, velocity.Length(), airDensity);
 
