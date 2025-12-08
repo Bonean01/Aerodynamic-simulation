@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using NUnit.Framework;
 
 public class AerodynamicSurface {
@@ -20,20 +21,21 @@ public class AerodynamicSurface {
 
 
     /// <summary>
-    /// Returns the mount angle in radians.
+    /// Returns the mount angle in degrees.
     /// </summary>
     /// <returns></returns>
-    public float GetMountAngle() { return mountAngle * (360f / (2*(float)Math.PI)); }
+    public float GetMountAngle() => mountAngle;
 
     /// <summary>
     /// Computes the lift coeficient based on the current angle of attack and the set criticalAngle.
     /// </summary>
     /// <returns>The lift coeficient.</returns>
-    private float ComputeLiftCoeficient(float angleOfAttack) {
-        float lift = angleOfAttack < criticalAngle ? 
-        maxLiftCoeficient / criticalAngle * angleOfAttack :                                     // not in stall, linearly increase lift.
-        -(angleOfAttack - criticalAngle)*(angleOfAttack - criticalAngle) + maxLiftCoeficient;   // in stall, quadratically decrease lift.
-        return lift >= 0 ? lift : 0;                                                            // clamp to 0 if negative.
+    private float ComputeLiftCoeficient(float AOA) {
+        float effectiveAOA = Mathf.Abs(AOA);
+        float lift = effectiveAOA < criticalAngle ? 
+        maxLiftCoeficient / criticalAngle * effectiveAOA :                                     // not in stall, linearly increase lift.
+        -(effectiveAOA - criticalAngle)*(effectiveAOA - criticalAngle) + maxLiftCoeficient;   // in stall, quadratically decrease lift.
+        return lift < 0 ? 0 : Mathf.Sign(AOA) * lift;
     }
 
     /// <summary>
@@ -52,11 +54,11 @@ public class AerodynamicSurface {
     /// <returns></returns>
     public float ComputeLift(float angleOfAttack, float airspeed, float airDensity) {
         float liftCoeficient = ComputeLiftCoeficient(angleOfAttack + mountAngle);
-        //TestContext.WriteLine("Lift coeficient: " + liftCoeficient);
-        //TestContext.WriteLine("Surface area: " + this.surfaceArea);
-        //TestContext.WriteLine("Angle of attack: " + angleOfAttack);
-        //TestContext.WriteLine("Airspeed: " + airspeed);
-        //TestContext.WriteLine("Air density: " + airDensity);
+        //Debug.Log("Lift coeficient: " + liftCoeficient);
+        //Debug.Log("Surface area: " + this.surfaceArea);
+        //Debug.Log("Angle of attack: " + angleOfAttack);
+        //Debug.Log("Airspeed: " + airspeed);
+        //Debug.Log("Air density: " + airDensity);
         return 1f/2f * airspeed*airspeed * this.surfaceArea * liftCoeficient * airDensity;
     }
 
