@@ -1,12 +1,10 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 //using NUnit.Framework;
 
 /// <summary>
 /// Holds the data needed for an aircraft where the nose points to the +Z axis.
 /// </summary>
-public abstract class Aircraft {
+public abstract class Aircraft : MonoBehaviour {
     /// <summary> Total effective mass of the aircraft for the computation of the forces. /summary>
     public float Mass { get; protected set; }
     /// <summary> The angle of the aircraft's body relative to the direction of motion. </summary>
@@ -23,12 +21,12 @@ public abstract class Aircraft {
     /// CG: Center of Gravity of the aircraft, this is the point where gravity will be applied and the point around which the aircraft will rotate if any
     /// external force is applied in a line where the CG is not included.
     /// </summary>
-    public Vector3 CG;
+    private Vector3 CG;
     /// <summary>
     /// CL: Center of Lift of the aircraft, this is the point where lift will be applied,
     /// usually positioned aft (towards the tail) of the CG to favour stability.
     /// </summary>
-    public Vector3 CL;
+    private Vector3 CL;
 
     /// <summary>
     /// Computes the angle of attack of the aircraft based on the velocity vector and the aircrafts forward vector in global coordinates.
@@ -50,12 +48,12 @@ public abstract class Aircraft {
     /// Computes the total lift due to all aerodynamic surfaces on the aircraft that will directly be applied to the CL.
     /// </summary>
     /// <returns>The lift vector in global coordinates.</returns>
-    public abstract Vector3 ComputeLift(float airDensity);
+    public abstract Vector3 ComputeLift(AerodynamicSurface surface);
     /// <summary>
     /// Computes the total drag due to all aerodynamic surfaces on the aircraft.
     /// </summary>
     /// <returns>The drag vector in global coordinates</returns>
-    public abstract Vector3 ComputeDrag(float airDensity);
+    public abstract Vector3 ComputeDrag(AerodynamicSurface surface);
     /// <summary>
     /// Computes the total thrust force acting on the aircraft.
     /// </summary>
@@ -67,7 +65,7 @@ public abstract class Aircraft {
     /// <param name="gravity">The gravity acceleration constant.</param>
     /// <returns>The weight force vector in global coordinates.</returns>
     public Vector3 ComputeWeight(float gravity) {
-        return new Vector3 (0, -1, 0) * Mass * gravity;
+        return gravity * Mass * new Vector3 (0, -1, 0);
     }
 
     /// <summary>

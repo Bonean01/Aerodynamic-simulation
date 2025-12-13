@@ -1,7 +1,5 @@
-using System;
-using System.Data;
+/* using System;
 using UnityEngine;
-using UnityEngine.Diagnostics;
 
 [ExecuteAlways]
 public class AeroSimAdapter : MonoBehaviour {
@@ -34,7 +32,7 @@ public class AeroSimAdapter : MonoBehaviour {
         
     }
 
-    void FixedUpdate() {
+    void Update() {
         simAirplane = new Airplane(mass, wingSurfaceArea, wingMountAngle, wingCriticalAngle);
         simAirplane.Velocity = Vector3.forward * speed;
         velocity = simAirplane.Velocity;
@@ -65,3 +63,4 @@ public class AeroSimAdapter : MonoBehaviour {
         Gizmos.DrawLine(position, position + force / mass * forceDisplayScale);
     }
 }
+ */
