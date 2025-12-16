@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 231801174}
   - component: {fileID: 231801173}
   m_Layer: 0
-  m_Name: CenterOfGravity
+  m_Name: Airplane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,17 +145,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 231801171}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.026700301, y: 0, z: 0, w: 0.9996435}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1783872140}
-  - {fileID: 2119749388}
   - {fileID: 1939110121}
-  - {fileID: 895719806}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -3.06, y: 0, z: 0}
 --- !u!114 &231801173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,30 +165,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedfc5eed6c3a2f4fbf2de286af8a118, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Airplane
-  rb: {fileID: 231801174}
-  mass: 20000
-  acceleration: 0
+  atmosphere: {fileID: 1034513693}
+  airplaneConfig: {fileID: 11400000, guid: 5f469fe910db2424e93d29ec2a4c3de8, type: 2}
+  mass: 60000
+  enginePower: 0
+  engineIntakeArea: 0
+  engineNumber: 0
   wings:
     surfaceArea: 125
     mountAngle: 0
-    criticalAngle: 20
+    criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    CL: {fileID: 1783872140}
+    CL: {x: 0, y: 0, z: -0.4}
   tail:
-    surfaceArea: 50
-    mountAngle: -3
-    criticalAngle: 20
+    surfaceArea: 32
+    mountAngle: 0
+    criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    CL: {fileID: 2119749388}
+    CL: {x: 0, y: 0, z: -13}
   initialVelocity: {x: 0, y: 0, z: 0}
-  forceDisplayScale: 0.2
-  angleOfAttack: 3.1600683
-  speed: 114.78
-  velocity: {x: 0, y: 0, z: 143.3}
-  totalMoment: 0
-  position: {x: 0, y: 2000, z: 0}
+  forceDisplayScale: 0
+  writeDataToFiles: 0
+  angleOfAttack: 0
+  speed: 0
+  velocity: {x: 0, y: 0, z: 0}
+  position: {x: 0, y: 0, z: 0}
 --- !u!54 &231801174
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -532,7 +532,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &895719804
+--- !u!1 &1034513692
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -540,72 +540,45 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 895719806}
-  - component: {fileID: 895719805}
+  - component: {fileID: 1034513694}
+  - component: {fileID: 1034513693}
   m_Layer: 0
-  m_Name: SimulationSettings
+  m_Name: Atmosphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &895719805
+--- !u!114 &1034513693
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895719804}
+  m_GameObject: {fileID: 1034513692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 66e75bdc59f2ab44cb5df2653750f9c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 45d59d4ec0c6c0a4e9f6384886b503a1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SimulationSettings
---- !u!4 &895719806
+  m_EditorClassIdentifier: Assembly-CSharp::Atmosphere
+  seaAirDensity: 1.225
+  temperatureLapseRate: 0.0065
+  seaTemperature: 288.16
+  polytropicIndex: 5.2561
+--- !u!4 &1034513694
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 895719804}
+  m_GameObject: {fileID: 1034513692}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.6225436, y: -0.31759608, z: 0.3057898, w: 0.64657944}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 231801172}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1783872139
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1783872140}
-  m_Layer: 0
-  m_Name: WingsCL
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1783872140
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1783872139}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: 0.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 231801172}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1939110116
 GameObject:
@@ -690,39 +663,8 @@ Transform:
   m_GameObject: {fileID: 1939110116}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: -2.006}
-  m_LocalScale: {x: 1, y: 1, z: 5.6888003}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 231801172}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2119749387
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2119749388}
-  m_Layer: 0
-  m_Name: HorizontalStabilizersCL
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2119749388
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2119749387}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4}
-  m_LocalScale: {x: 0.5669255, y: 0.76370454, z: 0.11560706}
+  m_LocalPosition: {x: -0, y: -0, z: -6.23}
+  m_LocalScale: {x: 1.99, y: 1.99, z: 16.152393}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 231801172}
@@ -1129,7 +1071,7 @@ Transform:
   m_GameObject: {fileID: 4198346183007797853}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -17.09}
+  m_LocalPosition: {x: 0, y: 0, z: -25.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1204,7 +1146,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3533167574617184487}
   - component: {fileID: 4198346183007797855}
-  - component: {fileID: 4198346183007797856}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -1239,42 +1180,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4198346183007797856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4198346183007797853}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cedfc5eed6c3a2f4fbf2de286af8a118, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Airplane
-  rb: {fileID: 4198346183007797855}
-  mass: 41145
-  acceleration: 0
-  wings:
-    surfaceArea: 0
-    mountAngle: 0
-    criticalAngle: 20
-    maxLiftCoeficient: 1.5
-    aspectRatio: 0.5
-    CL: {fileID: 0}
-  tail:
-    surfaceArea: 0
-    mountAngle: 0
-    criticalAngle: 20
-    maxLiftCoeficient: 1.5
-    aspectRatio: 0.5
-    CL: {fileID: 0}
-  initialVelocity: {x: 0, y: 0, z: 0}
-  forceDisplayScale: 0.2
-  angleOfAttack: -28.369663
-  speed: 0
-  velocity: {x: 0, y: 0, z: 163.5}
-  totalMoment: 0
-  position: {x: 0, y: 0, z: 0}
 --- !u!33 &4371920421327093632
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1822,3 +1727,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 3533167574617184487}
   - {fileID: 231801172}
+  - {fileID: 1034513694}

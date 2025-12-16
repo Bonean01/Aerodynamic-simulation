@@ -13,7 +13,7 @@ public class AerodynamicSurface {
     [SerializeField] protected float maxLiftCoeficient = 1.5f;
     [SerializeField] protected float aspectRatio = 0.5f;
     /// <summary>Point where the aerodynamic force produced by this surface will be applied in the aircraft.</summary>
-    [SerializeField] protected Transform CL;
+    [SerializeField] private Vector3 centerOfLift;
     /// <summary>Aerodynamic surface that produces downwash on the current one, changing its relative angle of attack.</summary>
     protected AerodynamicSurface downwashingSurface;
 
@@ -24,7 +24,7 @@ public class AerodynamicSurface {
     /// <returns></returns>
     public float GetMountAngle() => mountAngle;
 
-    public Vector3 GetCLPosition() => CL.position;
+    public Vector3 GetCLWorldPos(Transform aircraftTransform) => aircraftTransform.TransformPoint(aircraftTransform.position + centerOfLift);
 
     public void SetDownwashingSurface(AerodynamicSurface downwashingSurface) => this.downwashingSurface = downwashingSurface;
 
