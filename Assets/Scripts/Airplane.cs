@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
+using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Airplane : Aircraft {
     private Rigidbody rb;
     [SerializeField] private Atmosphere atmosphere;
     [SerializeField] private AirplaneConfig airplaneConfig;
-
+    [Range(0, 1)] [SerializeField] private float throttle;
     [SerializeField] private Vector3 velocity;
     [SerializeField] private Vector3 position;
     
@@ -82,8 +83,8 @@ public class Airplane : Aircraft {
     }
 
     public override Vector3 ComputeThrust() {
-        float airDensity = atmosphere.ComputeAirDensity(position.y);
-        return airplaneConfig.EngineNumber * airplaneConfig.Engine.ComputeThrust(airDensity, Velocity.magnitude, atmosphere);
+        //return Mathf.Lerp(0, 200000, throttle) * transform.forward;
+        return airplaneConfig.EngineNumber * airplaneConfig.Engine.ComputeThrust(position.y, Velocity.magnitude, throttle, atmosphere) * transform.forward;
     }
 
     private Vector3 GetSurfaceRelativeTangentialVelocity(AerodynamicSurface surface) {
@@ -162,10 +163,10 @@ public class Airplane : Aircraft {
         Gizmos.DrawSphere(transform.position, .2f);
         
         if (!EditorApplication.isPlaying) {
-        Gizmos.color = Color.green;
-        Gizmos.DrawSphere(airplaneConfig.Wings.GetCLWorldPos(transform), .2f);
-        Gizmos.DrawSphere(airplaneConfig.Tail.GetCLWorldPos(transform), .2f);
-        return;
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(airplaneConfig.Wings.GetCLWorldPos(transform), .2f);
+            Gizmos.DrawSphere(airplaneConfig.Tail.GetCLWorldPos(transform), .2f);
+            return;
         }
 
 

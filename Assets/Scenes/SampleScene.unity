@@ -167,31 +167,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Airplane
   atmosphere: {fileID: 1034513693}
   airplaneConfig: {fileID: 11400000, guid: 5f469fe910db2424e93d29ec2a4c3de8, type: 2}
-  mass: 60000
-  enginePower: 0
-  engineIntakeArea: 0
-  engineNumber: 0
-  wings:
-    surfaceArea: 125
-    mountAngle: 0
-    criticalAngle: 18
-    maxLiftCoeficient: 1.5
-    aspectRatio: 0.5
-    CL: {x: 0, y: 0, z: -0.4}
-  tail:
-    surfaceArea: 32
-    mountAngle: 0
-    criticalAngle: 18
-    maxLiftCoeficient: 1.5
-    aspectRatio: 0.5
-    CL: {x: 0, y: 0, z: -13}
-  initialVelocity: {x: 0, y: 0, z: 0}
-  forceDisplayScale: 0
+  throttle: 1
+  velocity: {x: 0, y: 0, z: 120}
+  position: {x: 0, y: 20000, z: 0}
   writeDataToFiles: 0
   angleOfAttack: 0
   speed: 0
-  velocity: {x: 0, y: 0, z: 0}
-  position: {x: 0, y: 0, z: 0}
 --- !u!54 &231801174
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -564,7 +545,11 @@ MonoBehaviour:
   seaAirDensity: 1.225
   temperatureLapseRate: 0.0065
   seaTemperature: 288.16
-  polytropicIndex: 5.2561
+  seaPressure: 101325
+  airSpecificHeat: 1005
+  airSpecificHeatRatio: 1.4
+  airSpecificGasConstant: 287
+  dryAirMolarMass: 0.02896968
 --- !u!4 &1034513694
 Transform:
   m_ObjectHideFlags: 0
@@ -597,7 +582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1939110119
 MeshRenderer:
   m_ObjectHideFlags: 0

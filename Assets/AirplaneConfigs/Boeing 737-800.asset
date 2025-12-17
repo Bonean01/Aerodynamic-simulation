@@ -19,16 +19,17 @@ MonoBehaviour:
     criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    CL: {x: 0, y: 0, z: -0.4}
+    centerOfLift: {x: 0, y: 0, z: -0.4}
   tail:
     surfaceArea: 32
-    mountAngle: 0
+    mountAngle: -3
     criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    CL: {x: 0, y: 0, z: -13}
-  engineNumber: 2
+    centerOfLift: {x: 0, y: 0, z: -13}
+  engineNumber: 1.5
   engine:
-    engineMaxPower: 0
-    engineIntakeArea: 0
-    nozzlePressureRatio: 0
+    maxEnginePressureRatio: 2
+    engineIntakeArea: 1.5
+    combustionTemperature: 1223
+    adiabaticNozzleEfficiency: 0.95
