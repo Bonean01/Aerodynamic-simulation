@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
-using Unity.VisualScripting;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Airplane : Aircraft {
@@ -22,25 +21,11 @@ public class Airplane : Aircraft {
     [SerializeField] private float speed;
 
     private AerodynamicSurface[] aeroSurfaces;
+    private (Vector3 force, Vector3 position)[] lifts, drags;
     private Vector3 centerOfGravity;
-
-    private IEnumerable<(Vector3 force, Vector3 position)> Lifts {
-        get {
-            foreach (AerodynamicSurface surface in aeroSurfaces)
-                yield return (ComputeLift(surface), surface.GetCLWorldPos(transform));
-        }
-    }
-
-    private IEnumerable<(Vector3 force, Vector3 position)> Drags {
-        get {
-            foreach (AerodynamicSurface surface in aeroSurfaces)
-                yield return (ComputeDrag(surface), surface.GetCLWorldPos(transform));
-        }
-    }
 
     private Vector3 Weight { get => ComputeWeight(SimulationSettings.gravity); }
     private Vector3 Thrust { get => ComputeThrust(); }
-
 
     private int counter = 0;
     private float prevPitch = 0;
@@ -51,6 +36,26 @@ public class Airplane : Aircraft {
         Pitch = pitch;
         Yaw = yaw;
         Roll = roll;
+    }
+
+    private (Vector3, Vector3)[] ComputeLifts() {
+        (Vector3, Vector3)[] lifts = new (Vector3, Vector3)[aeroSurfaces.Length];
+        int i = 0;
+        foreach (AerodynamicSurface surface in aeroSurfaces) {
+            lifts[i] = (ComputeLift(surface), surface.GetCLWorldPos(transform));
+            i++;
+        }
+        return lifts;
+    }
+    
+    private (Vector3, Vector3)[] ComputeDrags() {
+        (Vector3, Vector3)[] drags = new (Vector3, Vector3)[aeroSurfaces.Length];
+        int i = 0;
+        foreach (AerodynamicSurface surface in aeroSurfaces) {
+            drags[i] = (ComputeDrag(surface), surface.GetCLWorldPos(transform));
+            i++;
+        }
+        return drags;
     }
 
     public override Vector3 ComputeLift(AerodynamicSurface surface) {
@@ -100,10 +105,10 @@ public class Airplane : Aircraft {
 
     private Vector3 GetTotalTorque() {
         Vector3 torque = Vector3.zero;
-        foreach (var lift in Lifts) {
+        foreach (var lift in lifts) {
             torque += ComputeTorque(lift.force, lift.position);
         }
-        foreach (var drag in Drags) {
+        foreach (var drag in drags) {
             torque += ComputeTorque(drag.force, drag.position);
         }
         return torque;
@@ -111,8 +116,8 @@ public class Airplane : Aircraft {
 
     private Vector3 GetTotalForce() {
         Vector3 totalForce = Weight + Thrust;
-        foreach (var lift in Lifts) totalForce += lift.force;
-        foreach (var drag in Drags) totalForce += drag.force;
+        foreach (var lift in lifts) totalForce += lift.force;
+        foreach (var drag in drags) totalForce += drag.force;
 
         return totalForce;
     }
@@ -127,8 +132,8 @@ public class Airplane : Aircraft {
 
         rb = GetComponent<Rigidbody>();
 
-        aeroSurfaces = new AerodynamicSurface[] {airplaneConfig.Wings, airplaneConfig.Tail};
-        airplaneConfig.Tail.SetDownwashingSurface(airplaneConfig.Wings);
+        aeroSurfaces = airplaneConfig.aerodynamicSurfaces;
+        airplaneConfig.Tail.SetDownwashingSurface(airplaneConfig.RWing);
         centerOfGravity = transform.position;
         rb.centerOfMass = centerOfGravity;
         Velocity = velocity;
@@ -143,11 +148,18 @@ public class Airplane : Aircraft {
         velocity = Velocity;
         SetPitchYawRoll(-transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
 
+        lifts = ComputeLifts();
+        drags = ComputeDrags();
+
         rb.AddTorque(GetTotalTorque());
 
         Velocity += GetTotalForce() / Mass * Time.fixedDeltaTime;
         position += Velocity * Time.fixedDeltaTime;
 
+        WriteToFiles();
+    }
+
+    private void WriteToFiles() {
         counter++;
         if (counter % 60 == 0 && writeDataToFiles) {
             File.AppendAllText(positionsPath, position.z + "\t" + position.y + "\n");
@@ -160,22 +172,22 @@ public class Airplane : Aircraft {
 
     public void OnDrawGizmos() {
         DisplayForceAtPosition(transform.position, Weight, Color.red);
-        Gizmos.DrawSphere(transform.position, .2f);
+        Gizmos.DrawSphere(transform.position, .4f);
         
         if (!EditorApplication.isPlaying) {
             Gizmos.color = Color.green;
-            Gizmos.DrawSphere(airplaneConfig.Wings.GetCLWorldPos(transform), .2f);
-            Gizmos.DrawSphere(airplaneConfig.Tail.GetCLWorldPos(transform), .2f);
+            foreach (AerodynamicSurface surface in airplaneConfig.aerodynamicSurfaces)
+                Gizmos.DrawSphere(surface.GetCLWorldPos(transform), .4f);
             return;
         }
 
 
-        foreach (var lift in Lifts) {
+        foreach (var lift in lifts) {
             DisplayForceAtPosition(lift.position, lift.force, Color.green);
-            Gizmos.DrawSphere(lift.position, .2f);
+            Gizmos.DrawSphere(lift.position, .4f);
         }
 
-        foreach (var drag in Drags) DisplayForceAtPosition(drag.position, drag.force, Color.blue);
+        foreach (var drag in drags) DisplayForceAtPosition(drag.position, drag.force, Color.blue);
 
         Gizmos.color = Color.orange;
         DisplayForceAtPosition(transform.position, Thrust);
