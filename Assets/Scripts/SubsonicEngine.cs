@@ -21,7 +21,7 @@ public class SubsonicEngine {
         float thrust = massFlowRate * (exitAirspeed - inletAirspeed);
         
         //Vector3 direction = new (0, Mathf.Sin(engineMountAngle * Mathf.Deg2Rad), Mathf.Cos(engineMountAngle * Mathf.Deg2Rad));
-        Debug.Log($"air density: {airDensity}\tthrust: {thrust}");
+        //Debug.Log($"air density: {airDensity}\tthrust: {thrust}");
         return thrust;
     }
 

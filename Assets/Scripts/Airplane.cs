@@ -20,6 +20,7 @@ public class Airplane : Aircraft {
     [SerializeField] private float angleOfAttack;
     [SerializeField] private float speed;
 
+
     private AerodynamicSurface[] aeroSurfaces;
     private (Vector3 force, Vector3 position)[] lifts, drags;
     private Vector3 centerOfGravity;
@@ -38,38 +39,39 @@ public class Airplane : Aircraft {
         Roll = roll;
     }
 
-    private (Vector3, Vector3)[] ComputeLifts() {
-        (Vector3, Vector3)[] lifts = new (Vector3, Vector3)[aeroSurfaces.Length];
+    private void PopulateLiftsArray(ref (Vector3, Vector3)[] lifts) {
+        lifts ??= new (Vector3, Vector3)[aeroSurfaces.Length];
         int i = 0;
         foreach (AerodynamicSurface surface in aeroSurfaces) {
             lifts[i] = (ComputeLift(surface), surface.GetCLWorldPos(transform));
             i++;
         }
-        return lifts;
     }
     
-    private (Vector3, Vector3)[] ComputeDrags() {
-        (Vector3, Vector3)[] drags = new (Vector3, Vector3)[aeroSurfaces.Length];
+    private void PopulateDragsArray(ref (Vector3, Vector3)[] drags) {
+        drags ??= new (Vector3, Vector3)[aeroSurfaces.Length];
         int i = 0;
         foreach (AerodynamicSurface surface in aeroSurfaces) {
             drags[i] = (ComputeDrag(surface), surface.GetCLWorldPos(transform));
             i++;
         }
-        return drags;
     }
 
     public override Vector3 ComputeLift(AerodynamicSurface surface) {
         Vector3 localVelocity = Velocity + GetSurfaceRelativeTangentialVelocity(surface);
         if (localVelocity.magnitude == 0) return Vector3.zero;
+        
         // Compute the lift produced by the surface.
         float airDensity = atmosphere.ComputeAirDensity(position.y);
-        float liftMagnitude = surface.ComputeLift(AngleOfAttack, localVelocity.magnitude, airDensity);
+        float localAOA = surface.ComputeLocalAOA(Velocity, transform);
+        float liftMagnitude = surface.ComputeLift(localAOA, localVelocity.magnitude, airDensity);
 
         // Compute the direction in global coordinates in which the lift will be applied considering the orientation
         // of the aircraft and the mounting angle of the aerodynamic surfaces.
         float effectivePitch = this.Pitch + surface.GetMountAngle();
-        Matrix4x4 local2world = GetLocalToGlobalMatrix(effectivePitch, this.Yaw, this.Roll);
-        Vector3 liftDirection = local2world * Vector3.up;
+        float effectiveRoll = this.Roll + surface.GetDihedral();
+        Matrix4x4 local2world = GetLocalToGlobalMatrix(effectivePitch, this.Yaw, effectiveRoll);
+        Vector3 liftDirection = local2world * surface.GetSurfaceNormal();
 
         return liftMagnitude * liftDirection;
     }
@@ -79,7 +81,8 @@ public class Airplane : Aircraft {
         if (localVelocity.magnitude == 0) return Vector3.zero;
         // Compute the drag produced by the surface.
         float airDensity = atmosphere.ComputeAirDensity(position.y);
-        float dragMagnitude = surface.ComputeDrag(AngleOfAttack, localVelocity.magnitude, airDensity);
+        float localAOA = surface.ComputeLocalAOA(Velocity, transform);
+        float dragMagnitude = surface.ComputeDrag(localAOA, localVelocity.magnitude, airDensity);
 
         // Drag always acts opposite to the direction of motion.
         Vector3 dragDirection = -localVelocity.normalized;
@@ -125,14 +128,18 @@ public class Airplane : Aircraft {
 
     [ContextMenu("Apply pitch down disturbance")]
     private void PitchDownDisturbance() => rb.AddTorque(ComputeTorque(0.2f * Weight.magnitude * transform.up, airplaneConfig.Tail.GetCLWorldPos(transform)));
+    [ContextMenu("Apply yaw left disturbance")]
+    private void YawLeftDisturbance() => rb.AddTorque(ComputeTorque(0.2f * Weight.magnitude * transform.right, airplaneConfig.Tail.GetCLWorldPos(transform)));
 
     void Start() {
-        File.WriteAllText(positionsPath, "");
-        File.WriteAllText(pitchRatePath, "");
+        if (writeDataToFiles) {
+            File.WriteAllText(positionsPath, "");
+            File.WriteAllText(pitchRatePath, "");
+        }
 
         rb = GetComponent<Rigidbody>();
 
-        aeroSurfaces = airplaneConfig.aerodynamicSurfaces;
+        aeroSurfaces = airplaneConfig.AerodynamicSurfaces;
         airplaneConfig.Tail.SetDownwashingSurface(airplaneConfig.RWing);
         centerOfGravity = transform.position;
         rb.centerOfMass = centerOfGravity;
@@ -148,20 +155,21 @@ public class Airplane : Aircraft {
         velocity = Velocity;
         SetPitchYawRoll(-transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z);
 
-        lifts = ComputeLifts();
-        drags = ComputeDrags();
+        PopulateLiftsArray(ref lifts);
+        PopulateDragsArray(ref drags);
 
         rb.AddTorque(GetTotalTorque());
 
-        Velocity += GetTotalForce() / Mass * Time.fixedDeltaTime;
+        //Velocity += GetTotalForce() / Mass * Time.fixedDeltaTime;
         position += Velocity * Time.fixedDeltaTime;
-
-        WriteToFiles();
+ 
+        if (writeDataToFiles)
+            WriteToFiles();
     }
 
     private void WriteToFiles() {
         counter++;
-        if (counter % 60 == 0 && writeDataToFiles) {
+        if (counter % 60 == 0) {
             File.AppendAllText(positionsPath, position.z + "\t" + position.y + "\n");
             float pitchRate = (prevPitch - Pitch) / Time.fixedDeltaTime;
             File.AppendAllText(pitchRatePath, counter + "\t" + pitchRate + "\n");
@@ -171,33 +179,46 @@ public class Airplane : Aircraft {
     }
 
     public void OnDrawGizmos() {
-        DisplayForceAtPosition(transform.position, Weight, Color.red);
+        DrawForceAtPosition(transform.position, Weight, Color.red);
         Gizmos.DrawSphere(transform.position, .4f);
         
         if (!EditorApplication.isPlaying) {
             Gizmos.color = Color.green;
-            foreach (AerodynamicSurface surface in airplaneConfig.aerodynamicSurfaces)
+            foreach (AerodynamicSurface surface in airplaneConfig.AerodynamicSurfaces)
                 Gizmos.DrawSphere(surface.GetCLWorldPos(transform), .4f);
+
+            DrawAerodynamicSurfaces();
             return;
         }
 
 
         foreach (var lift in lifts) {
-            DisplayForceAtPosition(lift.position, lift.force, Color.green);
+            DrawForceAtPosition(lift.position, lift.force, Color.green);
             Gizmos.DrawSphere(lift.position, .4f);
         }
 
-        foreach (var drag in drags) DisplayForceAtPosition(drag.position, drag.force, Color.blue);
+        foreach (var drag in drags) DrawForceAtPosition(drag.position, drag.force, Color.blue);
 
         Gizmos.color = Color.orange;
-        DisplayForceAtPosition(transform.position, Thrust);
+        DrawForceAtPosition(transform.position, Thrust);
 
         Gizmos.color = Color.white;
         Gizmos.DrawLine(transform.position, transform.position + Velocity);
+
+        DrawAerodynamicSurfaces();
     }
 
-    private void DisplayForceAtPosition(Vector3 position, Vector3 force, Color? color = null) {
+    private void DrawForceAtPosition(Vector3 position, Vector3 force, Color? color = null) {
         if (color != null) Gizmos.color = (Color)color;
         Gizmos.DrawLine(position, position + force / Mass);
+    }
+
+    private void DrawAerodynamicSurfaces() {
+        foreach (AerodynamicSurface surface in airplaneConfig.AerodynamicSurfaces) {
+            Gizmos.matrix = Matrix4x4.Translate(surface.GetCLWorldPos(transform));
+            Gizmos.matrix *= transform.localToWorldMatrix;
+            Gizmos.matrix *= Matrix4x4.Rotate(Quaternion.Euler(-surface.GetMountAngle(), 0, Mathf.Sign(surface.GetCLWorldPos(transform).x) * surface.GetDihedral()));
+            Gizmos.DrawWireCube(Vector3.zero, 2 * Vector3.one);
+        }
     }
 }

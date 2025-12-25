@@ -4,7 +4,7 @@ using UnityEngine;
 public class AirplaneConfig : ScriptableObject {
     [Header("Airplane specifications")]
     [SerializeField] private float mass;
-    [SerializeField] private AerodynamicSurface rWing, lWing, tail;
+    [SerializeField] private AerodynamicSurface rWing, lWing, tail, tailFin;
 
     [Header("Engine specifications")]
     [SerializeField] private int engineNumber;
@@ -16,5 +16,5 @@ public class AirplaneConfig : ScriptableObject {
     public AerodynamicSurface Tail => tail;
     public int EngineNumber => engineNumber;
     public SubsonicEngine Engine => engine;
-    public AerodynamicSurface[] aerodynamicSurfaces => new AerodynamicSurface[] {rWing, lWing, tail};
+    public AerodynamicSurface[] AerodynamicSurfaces => new AerodynamicSurface[] {rWing, lWing, tail, tailFin};
 }

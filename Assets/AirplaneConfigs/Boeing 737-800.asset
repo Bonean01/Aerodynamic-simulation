@@ -13,21 +13,43 @@ MonoBehaviour:
   m_Name: Boeing 737-800
   m_EditorClassIdentifier: Assembly-CSharp::AircraftConfig
   mass: 60000
-  wings:
-    surfaceArea: 125
+  rWing:
+    surfaceArea: 62.5
     mountAngle: 0
+    dihedral: 6
+    mountDirection: 0
     criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    centerOfLift: {x: 0, y: 0, z: -0.4}
+    centerOfLift: {x: 5, y: 0, z: -0.4}
+  lWing:
+    surfaceArea: 62.5
+    mountAngle: 0
+    dihedral: 6
+    mountDirection: 0
+    criticalAngle: 18
+    maxLiftCoeficient: 1.5
+    aspectRatio: 0.5
+    centerOfLift: {x: -5, y: 0, z: -0.4}
   tail:
-    surfaceArea: 32
+    surfaceArea: 32.8
     mountAngle: -3
+    dihedral: 0
+    mountDirection: 0
     criticalAngle: 18
     maxLiftCoeficient: 1.5
     aspectRatio: 0.5
-    centerOfLift: {x: 0, y: 0, z: -13}
-  engineNumber: 1.5
+    centerOfLift: {x: 0, y: 1.75, z: -16.6}
+  tailFin:
+    surfaceArea: 30
+    mountAngle: 0
+    dihedral: 0
+    mountDirection: 1
+    criticalAngle: 18
+    maxLiftCoeficient: 1.5
+    aspectRatio: 0.5
+    centerOfLift: {x: 0, y: 0, z: -17.7}
+  engineNumber: 2
   engine:
     maxEnginePressureRatio: 2
     engineIntakeArea: 1.5

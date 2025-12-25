@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+using UnityEditor;
+
+public enum SurfaceMountDirection { Horizontal, Vertical, Axial }
 
 [Serializable]
 public class AerodynamicSurface {
@@ -7,6 +10,10 @@ public class AerodynamicSurface {
     [SerializeField] protected float surfaceArea;
     /// <summary>Angle at which this surface has been mounted relative to the aircraft.</summary>
     [SerializeField] [Range(-20, 20)] protected float mountAngle = 0;
+    /// <summary>Angle the surface forms with its corresponding axis.</summary>
+    [SerializeField] [Range(-20, 20)] protected float dihedral = 0;
+    /// <summary>The axis along which the surface is mounted along.</summary>
+    [SerializeField] protected SurfaceMountDirection mountDirection;
     /// <summary>Angle at which this surface will plummit lift production and will enter a stalled attitude (usually varies between 16º and 20º).</summary>
     [SerializeField] [Range(16, 20)] protected int criticalAngle = 20;
     /// <summary>Lift coeficient at the critical angle.</summary>
@@ -23,10 +30,32 @@ public class AerodynamicSurface {
     /// </summary>
     /// <returns></returns>
     public float GetMountAngle() => mountAngle;
+    public float GetDihedral() => dihedral;
+    public SurfaceMountDirection GetMountDirection() => mountDirection;
+
+    public float ComputeLocalAOA(Vector3 surfaceVelocity, Transform aircraftTransform) {
+        Vector3 surfaceNormal = aircraftTransform.TransformDirection(GetSurfaceNormal());
+        Vector3 wingRotationAxis = Vector3.Cross(aircraftTransform.forward, surfaceNormal);
+        Vector3 effectiveVelocity = Vector3.ProjectOnPlane(surfaceVelocity, wingRotationAxis);
+        Vector3 localForward = Vector3.ProjectOnPlane(aircraftTransform.forward, wingRotationAxis);
+        
+        float angle = Vector3.Angle(localForward, effectiveVelocity);
+        float sign = -Mathf.Sign(Vector3.Dot(surfaceNormal, effectiveVelocity));
+        return sign * angle;
+    }
 
     public Vector3 GetCLWorldPos(Transform aircraftTransform) => aircraftTransform.TransformPoint(aircraftTransform.position + centerOfLift);
 
     public void SetDownwashingSurface(AerodynamicSurface downwashingSurface) => this.downwashingSurface = downwashingSurface;
+
+    public Vector3 GetSurfaceNormal() {
+        return mountDirection switch {
+            SurfaceMountDirection.Horizontal => Vector3.up,
+            SurfaceMountDirection.Vertical => Vector3.right,
+            SurfaceMountDirection.Axial => Vector3.forward,
+            _ => throw new NotImplementedException()
+        };
+    }
 
     /// <summary>
     /// Computes the lift coeficient based on the current angle of attack and the set criticalAngle.
@@ -55,7 +84,8 @@ public class AerodynamicSurface {
     /// </summary>
     /// <returns></returns>
     public float ComputeLift(float angleOfAttack, float airspeed, float airDensity) {
-        float liftCoeficient = ComputeLiftCoeficient(angleOfAttack + mountAngle);
+        float localAOA = angleOfAttack + mountAngle;
+        float liftCoeficient = ComputeLiftCoeficient(localAOA);
         return 1f/2f * airspeed*airspeed * this.surfaceArea * liftCoeficient * airDensity;
     }
 

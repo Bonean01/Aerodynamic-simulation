@@ -119,6 +119,92 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &6985776
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 231801172}
+    m_Modifications:
+    - target: {fileID: -9151495174477937686, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_Name
+      value: front wheel
+      objectReference: {fileID: 0}
+    - target: {fileID: -9151495174477937686, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.383
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.77
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 3.85
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6341936994155152486, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4132317197774754618, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_Name
+      value: Back wheels
+      objectReference: {fileID: 0}
+    - target: {fileID: -4132317197774754618, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_Name
+      value: boeing737-800 AmericanAirlines
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2810401792705250294, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: -3784776564982433977, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
 --- !u!1 &231801171
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,14 +231,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 231801171}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.026700301, y: 0, z: 0, w: 0.9996435}
+  m_LocalRotation: {x: -0, y: 0.1937235, z: -0, w: 0.9810562}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1939110121}
+  - {fileID: 467483406}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -3.06, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 22.34, z: 0}
 --- !u!114 &231801173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,11 +255,11 @@ MonoBehaviour:
   atmosphere: {fileID: 1034513693}
   airplaneConfig: {fileID: 11400000, guid: 5f469fe910db2424e93d29ec2a4c3de8, type: 2}
   throttle: 1
-  velocity: {x: 0, y: 0, z: 120}
-  position: {x: 0, y: 20000, z: 0}
+  velocity: {x: 0, y: 0, z: 100}
+  position: {x: -0.3797536, y: 6879.609, z: 1480111.5}
   writeDataToFiles: 0
-  angleOfAttack: 0
-  speed: 0
+  angleOfAttack: 14.188079
+  speed: 190.28809
 --- !u!54 &231801174
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -286,13 +373,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.26754683, y: -0, z: -0, w: 0.96354485}
-  m_LocalPosition: {x: 0, y: 19.14, z: -26.66}
+  m_LocalRotation: {x: 0.038363006, y: -0.40055713, z: 0.016788304, w: 0.9153144}
+  m_LocalPosition: {x: 27.42, y: 6.9, z: -27.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 31.037, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 4.8, y: -47.27, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +551,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!4 &467483406 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7f36543f9497cb14bbc3c12a963940bc, type: 3}
+  m_PrefabInstance: {fileID: 6985776}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
